@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block title %}login{% endblock title %}
+
+{% block content %}
+
+    <div class="logo-name">Wanderlust</div>
+    <p class="slogan">Discover your paradise</p>
+
+   <div class="slideshow-container">
+        <div class="mySlides fade">
+            <div class="overlay"></div>
+                <img src="{{url_for('static', filename='images/brazil.jpg')}}" style="width:100%; height:100vh;">
+        </div>
+        <div class="mySlides fade">
+            <div class="overlay"></div>
+                <img src="{{url_for('static', filename='images/75bd8bb2-7d83-4419-bf82-817886175029.webp')}}" style="width:100%; height:100vh;">
+        </div>
+        <div class="mySlides fade">
+            <div class="overlay"></div>
+                <img src="{{url_for('static', filename='images/switzerland.webp')}}" style="width:100%; height:100vh;">
+        </div>
+        <div class="mySlides fade">
+            <div class="overlay"></div>
+                <img src="{{url_for('static', filename='images/italy.jpg')}}" style="width:100%; height:100vh;">
+        </div>
+    </div>
+
+
+    <div class="login-form">
+        <h2>Login</h2>
+        <form method="post" > 
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" value="{{credentials.email}}"  required   minlength="2" maxlength="20">
+            <br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" value="{{credentials.password}}"  required   minlength="5" maxlength="20">
+            <br><br>
+            <button onclick="saveUser()" class="btn btn-primary w-100" value="login">login</button>
+        </form>
+        <br><br>
+        <a href="{{url_for('auth_view.register')}}" class="register">register new user?</a>
+    </div>
+
+    
+    <script>
+        let slideIndex = 0;
+        showSlides();
+
+        function showSlides() {
+            let i;
+            let slides = document.getElementsByClassName("mySlides");
+            for (i = 0; i < slides.length; i++) {
+                slides[i].classList.remove('active');  
+            }
+            slideIndex++;
+            if (slideIndex > slides.length) {slideIndex = 1}    
+            slides[slideIndex-1].classList.add('active');
+            setTimeout(showSlides,3000); // Change image every 2 seconds
+        }
+    </script>
+{% endblock content %}

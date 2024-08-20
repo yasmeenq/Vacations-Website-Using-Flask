@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}Add Vacation{% endblock title %}
+
+{% block content %}
+<div class="background-container">
+    <div class="form-container">
+        <h2>Add Vacation</h2>
+
+        <form method="post" class="fancy_form" enctype="multipart/form-data">
+            <label>Country:</label>
+            <select name="countryName" id="countryDropdown" class="form-control" required>
+                <option value="">Select a country</option>
+            </select>
+            <br>
+            <label>Description:</label>
+            <input type="text" name="description" class="form-control" required>
+            <br>
+            <label>Price:</label>
+            <input type="number" name="price" step="0.01" class="form-control" required min="0" max="10000">
+            <br>
+            <label>Start Date:</label>
+            <input type="date" name="startDate" class="form-control" required>
+            <br>
+            <label>End Date:</label>
+            <input type="date" name="endDate" class="form-control" required>
+            <br>
+            <input type="file" name="vacationImage" accept="image/*" class="form-control">
+
+            <button class="btn btn-primary w-100">Add Vacation</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}
+
+<script src="{{ url_for('static', filename='path/to/your-file.js') }}"></script>
+</body>
+</html>

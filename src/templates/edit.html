@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}edit vacation{% endblock title %}
+
+
+{% block content %}
+<h2>Edit Vacation</h2>
+
+<form method="post" class="fancy_form"  enctype="multipart/form-data">
+
+    <input type="hidden" value="{{vacation.vacationID}}" name="vacationID" class="form-control">
+
+    <label>Country:</label>
+    <input type="text" name="countryID"  value="{{vacation.countryID}}" class="form-control" required>
+    <br>
+    <label>description:</label>
+    <input type="text" name="description"  value="{{vacation.description}}" class="form-control" required>
+    <br>
+    <label>Price:</label>
+    <input type="number" name="price" value="{{vacation.price}}" step="0.01" class="form-control" required min="0" max="10000"> 
+    <br>
+    <label>start date:</label>
+    <input type="datetime" name="startDate" value="{{vacation.startDate}}" class="form-control" required>
+    <br>
+    <label>end date:</label>
+    <input type="datetime" name="endDate" value="{{vacation.endDate}}" class="form-control" required>
+    <br>
+    <input type="file" name="vacationImage" value="{{vacation.vacationImage}}" accept="image/*"  class="form-control">
+
+    <button class="btn btn-primary w-100">Update</button>
+</form>
+
+{% endblock content %}
