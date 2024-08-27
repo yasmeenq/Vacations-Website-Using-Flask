@@ -12,24 +12,33 @@ class AuthFacade:
 
     def register(self):
         print("register facade called")  
+        
+        # Get form data
         first_name = request.form.get("firstname")
         last_name = request.form.get("lastname")
         email = request.form.get("email")
         password = request.form.get("password")
         user = UsersModel(None, first_name, last_name, email, password, RoleModel.User.value)
         
-        error = user.validate_register()  #error validation from use Model
+        error = user.validate_register()  #error validation from user Model
         if error: raise ValidationError(error, user)
         if self.logic.is_email_taken(email): raise ValidationError("Email already exists", user)
         
         user.password = Cyber.hash(user.password)
 
-        self.logic.add_user(user)
+        user_id = self.logic.add_user(user)
+        
+        if user_id is None:
+            raise ValueError("Failed to retrieve user ID after registration")
+        
+        user.userID = user_id  # Assign the generated user ID to the user object
+
         print(f'user added: {user}')
-        session["current_user"] = user  #save user in the session
+        print(f'{user_id}')
 
         # Store user details in the session
         session["current_user"] = {
+            "userID": user.userID,  # Ensure this is correctly populated
             "firstname": user.firstname,
             "lastname": user.lastname,
             "email": user.email,
@@ -67,13 +76,13 @@ class AuthFacade:
         if not user: raise AuthError("you are not logged in")
 
     #block non admin 
-    def block_non_admin(self):
+    def block_user(self):
         user = session.get("current_user")
         if not user: raise AuthError("you are not logged in")
         if user["roleID"] != RoleModel.Admin.value: raise AuthError("you are not allowed")
         
     #block non user
-    def block_non_user(self):
+    def block_admin(self):
         user = session.get("current_user")
         if not user: raise AuthError("you are not logged in")
         if user["roleID"] != RoleModel.User.value: raise AuthError("you are not allowed")        

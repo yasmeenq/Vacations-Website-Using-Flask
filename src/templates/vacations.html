@@ -3,108 +3,115 @@
 {% block title %}Vacations{% endblock title %}
 
 {% block content %}
-<div class="page-header">
-    <h2>Our Vacations Collection</h2>
-    {% if role_id == 1 %}
-    <a href="{{ url_for('vacation_view.insert') }}" class="btn btn-primary add-vac-btn">Add New Vacation</a>
-    {% endif %}
-</div>
-
-<div class="row">
-    {% for vac in vacation_data %}
+<div class="vac-all">
+    <div class="page-header">
+        <h2>Our Vacations Collection</h2>
+        {% if role_id == RoleModel.Admin.value %}
+        <a href="{{ url_for('vacation_view.insert') }}" class="btn btn-primary add-vac-btn">Add New Vacation</a>
+        {% endif %}
+    </div>
+    
+    <div class="row">
+        {% for vac in vacation_data %}
         <div class="col-md-4">
             <div class="card mb-4">
                 <div class="card-img-wrapper">
-                    <img class="card-img-top" src="{{ url_for('vacation_view.get_image', image_name=(vac['vacation'].vacationImage if vac['vacation'].vacationImage else '---')) }}" alt="Vacation Image">
-
+                    <img class="card-img-top"
+                        src="{{ url_for('vacation_view.get_image', image_name=(vac['vacation'].vacationImage if vac['vacation'].vacationImage else '---')) }}"
+                        alt="Vacation Image">
+    
                     <!-- buttons -->
-                    {% if role_id == 2 %}
+                    {% if role_id == RoleModel.User.value %}
                     <div class="btn-overlay likes-btn">
-                        <i id="like-icon-{{ vac['vacation'].vacationID }}" data-vacation-id="{{ vac['vacation'].vacationID }}" data-user-id="{{ user_id }}" style="cursor: pointer;" onclick="handleLike({{ vac['vacation'].vacationID }}, '{{ 'unlike' if vac['user_has_liked'] else 'like' }}')">
+                        <i id="like-icon-{{ vac['vacation'].vacationID }}"
+                            data-vacation-id="{{ vac['vacation'].vacationID }}" data-user-id="{{ user_id }}"
+                            style="cursor: pointer;"
+                            onclick="handleLike({{ vac['vacation'].vacationID }}, '{{ 'unlike' if vac['user_has_liked'] else 'like' }}')">
                             {% if vac['user_has_liked'] %}
-                            <svg class="heart-icon" width="24" height="24" viewBox="0 0 24 24" fill="red" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            <svg class="heart-icon" width="24" height="24" viewBox="0 0 24 24" fill="red"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                             </svg>
                             {% else %}
-                            <svg class="heart-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="gray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            <svg class="heart-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="gray"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                             </svg>
                             {% endif %}
                         </i>
                         <span id="like-count-{{ vac['vacation'].vacationID }}">{{ vac['like_count'] }}</span> Likes
                     </div>
-                    {% else %}
-                    <div class="btn-overlay likes-btn-admin">
-                        <svg class="heart-icon" width="24" height="24" viewBox="0 0 24 24" fill="red" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                        </svg>
-                        Likes Count:
-                        <span id="like-count-{{ vac['vacation'].vacationID }}">{{ vac['like_count'] }}</span>
-                    </div>
                     {% endif %}
-
-                    {% if role_id == 1 %}
-                    <a class="btn-overlay edit-btn" href="{{ url_for('vacation_view.edit', id=vac['vacation'].vacationID) }}"><span class="material-symbols-outlined">
-                        edit_square</span></a>
-                    <a onclick="confirmDelete()" class="btn-overlay delete-btn" href="{{ url_for('vacation_view.delete', id=vac['vacation'].vacationID) }}"><span class="material-symbols-outlined">
-                        delete</span></a>
+    
+                    {% if role_id == RoleModel.Admin.value %}
+                    <a class="btn-overlay edit-btn"
+                        href="{{ url_for('vacation_view.edit', id=vac['vacation'].vacationID) }}"><span
+                            class="material-symbols-outlined">
+                            edit_square</span></a>
+                    <a onclick="confirmDelete()" class="btn-overlay delete-btn"
+                        href="{{ url_for('vacation_view.delete', id=vac['vacation'].vacationID) }}"><span
+                            class="material-symbols-outlined">
+                            delete</span></a>
                     {% endif %}
-
-
+    
+    
                     <div class="card-title">
-                        <a href="{{ url_for('vacation_view.details', id=vac['vacation'].vacationID) }}">{{ vac['vacation'].countryName }}</a>
+                        <a href="{{ url_for('vacation_view.details', id=vac['vacation'].vacationID) }}">
+                            {{vac['vacation'].countryName }}</a>
                     </div>
-
-                    <div class="card-dates" >
+    
+                    <div class="card-dates">
                         <span class="material-symbols-outlined">calendar_month</span>
-                        <span>{{ vac['vacation'].startDate }} - {{ vac['vacation'].endDate }}</span>
+                        <span>{{ vac['vacation'].startDate }} »» {{ vac['vacation'].endDate }}</span>
                     </div>
-
-
-
+    
+    
                 </div>
-
-
-
+    
+    
                 <div class="card-body">
                     <p class="card-text">{{ vac['vacation'].description }}</p>
-
+    
                     <div class="card-price">
                         <p>Price {{ vac['vacation'].price | round(2) }}$</p>
                     </div>
-
+    
                 </div>
             </div>
         </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
+    
+    <script>
+        function handleLike(vacationID, action) {
+            fetch(`/vacation/${vacationID}/${action}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById(`like-count-${vacationID}`).innerText = data.like_count;
+                        let icon = document.getElementById(`like-icon-${vacationID}`);
+                        icon.innerHTML = action === "like" ?
+                            `<svg class="heart-icon" width="24" height="24" viewBox="0 0 24 24" fill="red" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>` :
+                            `<svg class="heart-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="gray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>`;
+                        icon.setAttribute("onclick", `handleLike(${vacationID}, '${action === "like" ? "unlike" : "like"}')`);
+                    } else {
+                        alert(data.error || "Failed to update like status.");
+                    }
+                });
+        }
+    </script>
+    
 </div>
-
-<script>
-function handleLike(vacationID, action) {
-    fetch(`/vacation/${vacationID}/${action}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            document.getElementById(`like-count-${vacationID}`).innerText = data.like_count;
-            let icon = document.getElementById(`like-icon-${vacationID}`);
-            icon.innerHTML = action === "like" ? 
-                `<svg class="heart-icon" width="24" height="24" viewBox="0 0 24 24" fill="red" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                </svg>` : 
-                `<svg class="heart-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="gray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                </svg>`;
-            icon.setAttribute("onclick", `handleLike(${vacationID}, '${action === "like" ? "unlike" : "like"}')`);
-        } else {
-            alert(data.error || "Failed to update like status.");
-        }
-    });
-}
-</script>
-
 {% endblock content %}

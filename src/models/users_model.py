@@ -32,8 +32,8 @@ class UsersModel:
             return "Firstname must be between 2 and 100 characters"
         if len(self.lastname) < 2 or len(self.lastname) > 100:
             return "Lastname must be between 2 and 100 characters"
-        if len(self.password) < 5 or len(self.password) > 20:
-            return "Password must be between 5 and 20 characters"
+        if len(self.password) < 4 or len(self.password) > 25:
+            return "Password must be between 4 and 25 characters"
 
         # Validate email format
         try:

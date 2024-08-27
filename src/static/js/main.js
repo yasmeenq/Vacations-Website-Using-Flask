@@ -23,6 +23,10 @@ function saveUser(){
 }
 
 
+function loginFirst(){
+    alert("Please Login First")
+}
+
 
 //likes
 document.addEventListener('DOMContentLoaded', () => {
@@ -78,33 +82,16 @@ function updateHeartColor(svgElement, isLiked) {
 
 
 
-//countries list
-document.addEventListener("DOMContentLoaded", function() {
-    const apiUrl = "https://restcountries.com/v3.1/all";
-    const countryDropdown = document.getElementById("countryDropdown");
-
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            data.sort((a, b) => {
-                if (a.name && b.name) {
-                    const nameA = a.name.common.toUpperCase();
-                    const nameB = b.name.common.toUpperCase();
-                    return nameA.localeCompare(nameB);
-                }
-                return 0;
-            });
-
-            data.forEach(country => {
-                if (country.name && country.name.common) {
-                    const option = document.createElement("option");
-                    option.value = country.name.common; // Set value to country name
-                    option.text = country.name.common;
-                    countryDropdown.appendChild(option);
-                }
-            });
-        })
-        .catch(error => {
-            console.error("Error fetching country data:", error);
-        });
+//home profile page
+document.addEventListener('scroll', function() {
+    const elements = document.querySelectorAll('.profile-body, .profile-actions');
+    elements.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight) {
+            el.classList.add('visible');
+        }
+    });
 });
+
+
+//header footer 

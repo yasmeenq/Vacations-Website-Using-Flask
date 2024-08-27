@@ -1,33 +1,94 @@
 {% extends "layout.html" %}
 
-{% block title %}edit vacation{% endblock title %}
-
+{% block title %}Edit Vacation{% endblock title %}
 
 {% block content %}
-<h2>Edit Vacation</h2>
 
-<form method="post" class="fancy_form"  enctype="multipart/form-data">
+<div class="background-container">
+    <div class="form-container">
+        <form method="post" class="fancy_form" enctype="multipart/form-data">
+            <h4 class="form-title">Edit {{vacation.countryName}} Vacation</h4>
 
-    <input type="hidden" value="{{vacation.vacationID}}" name="vacationID" class="form-control">
+            <input type="hidden" value="{{vacation.vacationID}}" name="vacationID" class="form-control">
 
-    <label>Country:</label>
-    <input type="text" name="countryID"  value="{{vacation.countryID}}" class="form-control" required>
-    <br>
-    <label>description:</label>
-    <input type="text" name="description"  value="{{vacation.description}}" class="form-control" required>
-    <br>
-    <label>Price:</label>
-    <input type="number" name="price" value="{{vacation.price}}" step="0.01" class="form-control" required min="0" max="10000"> 
-    <br>
-    <label>start date:</label>
-    <input type="datetime" name="startDate" value="{{vacation.startDate}}" class="form-control" required>
-    <br>
-    <label>end date:</label>
-    <input type="datetime" name="endDate" value="{{vacation.endDate}}" class="form-control" required>
-    <br>
-    <input type="file" name="vacationImage" value="{{vacation.vacationImage}}" accept="image/*"  class="form-control">
+            <label>Country:</label>
+            <select name="countryName" id="countryDropdown" class="form-control" required>
+                <option value="">Select a country</option>
+            </select>
 
-    <button class="btn btn-primary w-100">Update</button>
-</form>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4" cols="40" class="form-control"
+                required>{{ vacation.description }}</textarea>
 
+            <label>Price:</label>
+            <div class="price-input-wrapper">
+                <span class="dollar-sign">$</span>
+                <input type="number" value="{{vacation.price}}" name="price" step="0.01" class="form-control" required
+                    min="0" max="10000">
+            </div>
+
+            <label>Start On:</label>
+            <input type="date" name="startDate" value="{{vacation.startDate}}" class="form-control" required>
+
+            <label>End On:</label>
+            <input type="date" name="endDate" value="{{vacation.endDate}}" class="form-control" required>
+            <br>
+
+            <label>Cover Image:</label>
+            <input type="file" name="vacationImage" value="{{vacation.vacationImage}}" accept="image/*"
+                class="form-control">
+            <br>
+            <button class="btn btn-primary submit-btn">Edit</button>
+
+            <a class="btn btn-primary button-cancel" href="{{ url_for('vacation_view.list') }}">Cancel</a>
+        </form>
+    </div>
+</div>
+
+
+
+<script>
+
+    // countries list
+    document.addEventListener("DOMContentLoaded", function () {
+        const apiUrl = "https://restcountries.com/v3.1/all";
+        const countryDropdown = document.getElementById("countryDropdown");
+
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                data.sort((a, b) => {
+                    if (a.name && b.name) {
+                        const nameA = a.name.common.toUpperCase();
+                        const nameB = b.name.common.toUpperCase();
+                        return nameA.localeCompare(nameB);
+                    }
+                    return 0;
+                });
+
+                data.forEach(country => {
+                    if (country.name && country.name.common) {
+                        const option = document.createElement("option");
+                        option.value = country.name.common; // Set value to country name
+                        option.text = country.name.common;
+                        countryDropdown.appendChild(option);
+                    }
+                });
+
+                // Set previously selected country
+                const selectedCountry = "{{ vacation.countryName }}"; // Ensure this is correctly rendered in the template
+                if (selectedCountry) {
+                    countryDropdown.value = selectedCountry;
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching country data:", error);
+            });
+    });
+</script>
 {% endblock content %}
+
+<script src="{{ url_for('static', filename='path/to/your-file.js') }}"></script>
+</body>
+
+</html>

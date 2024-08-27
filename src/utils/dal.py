@@ -49,7 +49,7 @@ class DAL:
             self.connection.commit()
             row_count = cursor.rowcount
             return row_count  
-
+        
     # Close connection
     def close(self):
         self.connection.close()

@@ -5,7 +5,7 @@
 {% block content %}
 <div class="details-container">
     <div class="details-header">
-        <h2>{{ vacation.description }}</h2>
+        <h2>{{ vacation.countryName }}</h2>
         <hr>
     </div>
 
@@ -13,25 +13,26 @@
         <img src="{{ url_for('vacation_view.get_image', image_name=(vacation.vacationImage if vacation.vacationImage else '---')) }}"
             width="300" height="auto" alt="Vacation Image">
         <div class="details-info">
-            <h5>Country: {{ vacation.countryName }}</h5>
-            <h5>Country ID: {{ vacation.countryID }}</h5>
-            <h5>Start Date: {{ vacation.startDate }}</h5>
-            <h5>End Date: {{ vacation.endDate }}</h5>
-            <h3 class="price">Price: {{ vacation.price | round(2) }}$</h3>
+            <h5>Country: {{ vacation.countryName }} | ID: {{ vacation.countryID }}</h5>
+            <h5>{{ vacation.description }}</h5>
+            <br>
+            <h3 class="details-date">start on: {{ vacation.startDate }} | end on: {{ vacation.endDate }}</h3>
 
+            
+            <h3 class="price">Price: {{ vacation.price | round(2) }}$</h3>
             <!-- buttons -->
             <div class="button-group">
                 <a href="{{ url_for('vacation_view.list') }}" class="btn">Back</a>
-                {% if role_id == 1 %}
+                {% if role_id == RoleModel.Admin.value  %}
                 <a href="{{ url_for('vacation_view.edit', id=vacation.vacationID) }}" class="btn">Edit</a>
                 <a onclick="confirmDelete()" href="{{ url_for('vacation_view.delete', id=vacation.vacationID) }}"class="btn">Delete</a>
                 {% endif %}
             </div>
-            <br><br>
+            <br>
 
             <!-- Like/Unlike Feature -->
-            {% if role_id == 2 %}
-            <div class="like-container">
+            {% if role_id == RoleModel.User.value %}
+            <div class="like-container-details">
                 <i id="like-icon" data-vacation-id="{{ vacation.vacationID }}" data-user-id="{{ user_id }}" data-user-has-liked="{{ user_has_liked }}" style="cursor: pointer;">
                     {% if user_has_liked %}
                     <svg class="heart-icon" width="24" height="24" viewBox="0 0 24 24" fill="red" xmlns="http://www.w3.org/2000/svg">
@@ -43,10 +44,6 @@
                     </svg>
                     {% endif %}
                 </i>
-                <span id="like-count">{{ like_count }}</span> Likes
-            </div>
-            {% else %}
-            <div class="like-container">
                 <span id="like-count">{{ like_count }}</span> Likes
             </div>
             {% endif %}

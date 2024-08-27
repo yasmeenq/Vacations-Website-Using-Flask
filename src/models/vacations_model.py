@@ -20,11 +20,11 @@ class VacationsModel:
         countryID = dictionary["countryID"]
         countryName = dictionary["countryName"]
         description = dictionary["description"]
-        startDate = dictionary["startDate"]
+        startDate = dictionary["startDate"] 
         endDate = dictionary["endDate"]
         price = dictionary["price"]
         vacationImage = dictionary["vacationImage"]
-        vacation = VacationsModel(vacationID,countryName, countryID, description,startDate,endDate,price,vacationImage)
+        vacation = VacationsModel(vacationID, countryName, countryID, description,startDate,endDate,price,vacationImage)
         return vacation
     
     @staticmethod
@@ -52,6 +52,7 @@ class VacationsModel:
         if not self.startDate: return "missing start date"
         if not self.endDate: return "missing end date"
         if not self.price: return "missing price"
+
         
         if float(self.price) < 0 or float(self.price) > 10000: return "price must be 0-10000"
         return None #if no errors return nothing

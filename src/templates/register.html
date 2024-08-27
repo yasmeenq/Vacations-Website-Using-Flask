@@ -39,12 +39,13 @@
             <input type="email" id="email" name="email" value="{{user.email}}" required minlength="2" maxlength="20">
             <br>
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" value="{{user.password}}" required minlength="5" maxlength="20">
+            <input type="password" id="password" name="password" value="{{user.password}}" required minlength="4" maxlength="25">
             <br><br>
             <button type="submit" class="btn btn-primary w-100">Register</button>
         </form>
         <br><br>
-        <a href="{{url_for('auth_view.login')}}" class="register">Already have an account? Login here</a>
+        <span>already a member ? <span>
+        <a href="{{url_for('auth_view.login')}}" class="register">Login here</a>
     </div>
 
     <script>
