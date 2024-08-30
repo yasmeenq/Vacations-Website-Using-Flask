@@ -1,0 +1,65 @@
+
+
+
+
+
+
+
+
+<div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start custom-navbar">
+
+    {% set current_user = session.get('current_user') %}
+
+    <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+        <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
+            <use xlink:href="#bootstrap"></use>
+        </svg>
+    </a>
+
+    <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+        <li><a href="{{url_for('home_view.home')}}" class="nav-link px-2 text-white">Home</a></li>
+        {% if current_user %}
+        <li><a href="{{url_for('vacation_view.list')}}" class="nav-link px-2 text-white">Vacations</a></li>
+        {% else %}
+        <li><a onclick="loginFirst()" href="{{url_for('auth_view.login')}}" class="nav-link px-2 text-white">Vacations</a></li>
+        {% endif %}
+        <!-- <li><a href="{{url_for('vacation_view.insert')}}" class="nav-link px-2 text-white">Add</a></li> -->
+        <!-- <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
+        <li><a href="#" class="nav-link px-2 text-white">About</a></li> -->
+    </ul>
+
+
+    <div class="text-end">
+
+    
+        {% if current_user %}
+
+           <span class="authNav"> Hello  {{current_user['firstname']}} {{current_user['lastname']}} </span>
+
+
+            <button type="button" class="btn btn-outline-light me-2">
+                <a href="{{url_for('auth_view.logout')}}" class="text-white text-decoration-none">Logout</a>
+            </button>
+
+
+        {% else %}
+
+        
+            <span class="authNav">Hello Guest</span>
+
+            <button type="button" class="btn btn-outline-light me-2">
+                <a href="{{url_for('auth_view.login')}}" class="text-white text-decoration-none">Login</a>
+            </button>
+    
+            <button type="button" class="btn signup-btn">
+                <a href="{{ url_for('auth_view.register') }}" class="text-dark text-decoration-none">Sign-up</a>
+            </button>
+
+        {% endif %}
+    
+    </div>
+
+
+
+</div>
+

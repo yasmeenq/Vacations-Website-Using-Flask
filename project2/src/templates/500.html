@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block title %} 500 - Server Error {% endblock title %}
+
+
+{% block content %}
+
+<h1>500</h1>
+<h2>Some Error Occurred, please try again <h2>
+<br><br>
+<a href="{{url_for('home_view.home')}}">home</a>
+{% endblock content %}
