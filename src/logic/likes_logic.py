@@ -1,45 +1,22 @@
+from flask import session
 from utils.dal import DAL
 import logging
+from models.role_model import RoleModel
 
 class LikesLogic:
     def __init__(self):
         self.dal = DAL()
 
-    def user_exists(self, userID):
-        try:
-            sql = "SELECT COUNT(*) FROM users WHERE userID = %s"
-            params = (userID,)
-            result = self.dal.get_scalar(sql, params)
-            exists = result['COUNT(*)'] > 0 if result else False
-            logging.debug(f"User exists check for userID {userID}: {exists}")
-            return exists
-        except Exception as e:
-            logging.error(f"Error checking if user exists: {e}")
-            return False
-
-    def get_user_role(self, userID):
-        try:
-            sql = "SELECT roleID FROM users WHERE userID = %s"
-            params = (userID,)
-            result = self.dal.get_scalar(sql, params)
-            roleID = result['roleID'] if result else None
-            logging.debug(f"User role check for userID {userID}: {roleID}")
-            return roleID
-        except Exception as e:
-            logging.error(f"Error getting user role: {e}")
-            return None
-
     def add_like(self, userID, vacationID):
-        if not self.user_exists(userID):
-            logging.error(f"User with userID {userID} does not exist.")
-            return False
+        user = session.get("current_user")
+        userID = user["userID"]
+        roleID = user["roleID"]
 
-        roleID = self.get_user_role(userID)
-        if roleID is None or roleID == 1:
+        if roleID is None or roleID == RoleModel.Admin.value:
             logging.info(f"User with userID {userID} is an admin or guest. Cannot like vacationID {vacationID}.")
             return False
 
-        if roleID != 2:
+        if roleID != RoleModel.User.value:
             logging.error(f"User with userID {userID} does not have the correct roleID to like vacationID {vacationID}.")
             return False
 
@@ -53,11 +30,8 @@ class LikesLogic:
             logging.error(f"Error adding like: {e}")
             return False
 
-    def delete_like(self, userID, vacationID):
-        if not self.user_exists(userID):
-            logging.error(f"User with userID {userID} does not exist.")
-            return False
 
+    def delete_like(self, userID, vacationID):
         try:
             sql = "DELETE FROM likes WHERE userID = %s AND vacationID = %s"
             params = (userID, vacationID)
@@ -67,6 +41,7 @@ class LikesLogic:
         except Exception as e:
             logging.error(f"Error deleting like: {e}")
             return False
+
 
     #incase of deletion
     def delete_all_likes(self, vacationID):
@@ -79,7 +54,6 @@ class LikesLogic:
         except Exception as e:
             logging.error(f"Error deleting likes: {e}")
             return False
-
 
 
 
@@ -96,10 +70,6 @@ class LikesLogic:
             return 0
 
     def user_has_liked(self, userID, vacationID):
-        if not self.user_exists(userID):
-            logging.error(f"User with userID {userID} does not exist.")
-            return False
-
         try:
             sql = "SELECT COUNT(*) FROM likes WHERE userID = %s AND vacationID = %s"
             params = (userID, vacationID)

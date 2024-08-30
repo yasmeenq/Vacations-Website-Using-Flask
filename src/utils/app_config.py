@@ -5,7 +5,6 @@ from os import environ
 load_dotenv()
 
 class AppConfig:
-    
     is_development = environ.get("ENVIRONMENT") == "development" #either this returns true
     is_production = environ.get("ENVIRONMENT") == "production" #or this returns true
     mysql_host = environ.get("MYSQL_HOST")

@@ -80,7 +80,6 @@ class VacationsFacade:
     
     
 
-
     def delete_vacation(self, vacationID): 
         return self.logic.delete_vacation(vacationID)
     

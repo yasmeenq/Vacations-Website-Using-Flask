@@ -10,15 +10,12 @@ auth_facade = AuthFacade()
 @auth_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
-        # Render the registration page with empty user data
         return render_template('register.html', active='register', user={})
-    
     try:
-        # Handle form submission
         auth_facade.register()
+        print("Session data after registration:", session)
         return redirect(url_for('home_view.home'))
     except ValidationError as err:
-        # Render the registration page with the user data and error message
         return render_template('register.html', error=err.message, user=err.model)
     
 

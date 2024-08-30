@@ -33,6 +33,7 @@ def page_not_found(error):
 def catch_all(error):
     print(error)
     return render_template('500.html', error=error)
+
 # werkzeug - ארגז כלים 
 getLogger("werkzeug").setLevel(ERROR)
 
